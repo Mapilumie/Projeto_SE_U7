@@ -99,7 +99,7 @@ void nome_no_display(){ // Inicia o display e mostra o nome do projeto
     memset(ssd, 0, ssd1306_buffer_length);
     render_on_display(ssd, &frame_area);
 
-    char *text[] = {
+    char *texto[] = {
         "      ",
         "     ",
         "  Chess Clock   ",
@@ -108,9 +108,9 @@ void nome_no_display(){ // Inicia o display e mostra o nome do projeto
         "Por Maria Paula  ",};
 
     int y = 0;
-    for (uint i = 0; i < count_of(text); i++)
+    for (uint i = 0; i < count_of(texto); i++)
     {
-        ssd1306_draw_string(ssd, 5, y, text[i]);
+        ssd1306_draw_string(ssd, 5, y, texto[i]);
         y += 8;
     }
     render_on_display(ssd, &frame_area);
@@ -141,14 +141,14 @@ void atualiza_display(){
     memset(ssd, 0, ssd1306_buffer_length);
     render_on_display(ssd, &frame_area);
 
-    char textA[10];
-    char textB[10];
+    char textoA[10];
+    char textoB[10];
     
-    sprintf(textA, "A: %02d:%02d", timerA / 60, timerA % 60);
-    sprintf(textB, "B: %02d:%02d", timerB / 60, timerB % 60);
+    sprintf(textoA, "A: %02d:%02d", timerA / 60, timerA % 60);
+    sprintf(textoB, "B: %02d:%02d", timerB / 60, timerB % 60);
 
-    ssd1306_draw_string(ssd, 10, 10, textA);
-    ssd1306_draw_string(ssd, 10, 40, textB);
+    ssd1306_draw_string(ssd, 10, 10, textoA);
+    ssd1306_draw_string(ssd, 10, 40, textoB);
 
     render_on_display(ssd, &frame_area);
 }
@@ -156,7 +156,6 @@ void atualiza_display(){
 int main()
 {
     stdio_init_all();
-    //inicializador(); // Contém as funções de inicialização dos periféricos
     inicia_i2c();
     inicia_buttons();
     inicia_buzzer();
@@ -198,7 +197,7 @@ int main()
             gpio_put(LED_B_PIN, 0);
         }
     }
-    else if(joystick_apertado == false){
+    else if(joystick_apertado == false && pausado == false){
             sleep_ms(10); // Tempo de debounce
             if(joystick_apertado == false){
             pausado = true;
@@ -208,6 +207,18 @@ int main()
             gpio_put(LED_G_PIN, 0);
             gpio_put(LED_B_PIN, 0);
         }
+    }
+    else if(joystick_apertado == false && pausado == true){ // Se o joystick foi apertado com o tempo pausado, o tempo é reiniciado;
+            sleep_ms(10); // Tempo de debounce
+            if(joystick_apertado == false && pausado == true){ 
+                timerA = TEMPO_TOTAL;
+                timerB = TEMPO_TOTAL;
+                pausado = true;
+                timerA_correndo = false; 
+                timerB_correndo = false;
+    
+        }
+
     }
 
         
@@ -238,19 +249,20 @@ int main()
                 memset(ssd, 0, ssd1306_buffer_length);
                 render_on_display(ssd, &frame_area);
     
-                char *text[] = {
+                char *texto[] = {
                     "      ",
-                    " ..........   ",
+                    " ............ ",
                     "    ",
                     "    O TEMPO   ",
                     "    ACABOU!  ",
                     "      ",
                     "   A perdeu",};
+                    
     
                 int y = 0;
-                for (uint i = 0; i < count_of(text); i++)
+                for (uint i = 0; i < count_of(texto); i++)
                 {
-                    ssd1306_draw_string(ssd, 5, y, text[i]);
+                    ssd1306_draw_string(ssd, 5, y, texto[i]);
                     y += 8;
                 }
                 render_on_display(ssd, &frame_area);
@@ -274,19 +286,20 @@ int main()
                 memset(ssd, 0, ssd1306_buffer_length);
                 render_on_display(ssd, &frame_area);
     
-                char *text[] = {
+                char *texto[] = {
                     "      ",
-                    " ..........   ",
+                    " ............ ",
                     "    ",
                     "    O TEMPO   ",
                     "    ACABOU!  ",
                     "      ",
                     "   B perdeu",};
+
     
                 int y = 0;
-                for (uint i = 0; i < count_of(text); i++)
+                for (uint i = 0; i < count_of(texto); i++)
                 {
-                    ssd1306_draw_string(ssd, 5, y, text[i]);
+                    ssd1306_draw_string(ssd, 5, y, texto[i]);
                     y += 8;
                 }
                 render_on_display(ssd, &frame_area);
